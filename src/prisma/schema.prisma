@@ -1,0 +1,114 @@
+// prisma/schema.prisma
+
+// 1. Configuración del generador de cliente y la fuente de datos
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Esta línea construye la URL de conexión a partir de tu archivo .env
+  url      = "postgresql://${env("PGUSER")}:${env("PGPASSWORD")}@${env("PGHOST")}:${env("PGPORT")}/${env("PGDATABASE")}"
+}
+
+
+// 2. Definición de ENUMS para roles y estados (mejor práctica que usar strings)
+enum Role {
+  administrador
+  empleado
+}
+
+enum EstadoPedido {
+  pendiente
+  completado
+  cancelado
+}
+
+enum EstadoDevolucion {
+  procesando
+  aprobada
+  rechazada
+}
+
+
+// 3. Definición de los modelos de datos (traducción de tus tablas SQL)
+
+model usuarios {
+  id            Int      @id @default(autoincrement())
+  nombre        String   @db.VarChar(100)
+  email         String   @unique @db.VarChar(100)
+  password_hash String   @db.VarChar(255)
+  rol           Role
+  creado_en     DateTime @default(now()) @db.Timestamp(6)
+
+  // Relación: Un usuario puede gestionar muchos pedidos
+  pedidos       pedidos[]
+}
+
+model clientes {
+  id        Int      @id @default(autoincrement())
+  nombre    String   @db.VarChar(100)
+  apellido  String?  @db.VarChar(100) // El '?' lo hace opcional (nullable)
+  email     String   @unique @db.VarChar(100)
+  telefono  String?  @db.VarChar(20)
+  direccion String?
+  creado_en DateTime @default(now()) @db.Timestamp(6)
+
+  // Relación: Un cliente puede tener muchos pedidos
+  pedidos   pedidos[]
+}
+
+model productos {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @db.VarChar(150)
+  descripcion String?
+  precio      Decimal  @db.Decimal(10, 2)
+  stock       Int
+  creado_en   DateTime @default(now()) @db.Timestamp(6)
+
+  // Relación: Un producto puede estar en muchos items de pedido
+  pedido_items pedido_items[]
+}
+
+model pedidos {
+  id           Int          @id @default(autoincrement())
+  cliente_id   Int
+  usuario_id   Int? // Opcional, por si la venta es online
+  fecha_pedido DateTime     @default(now()) @db.Timestamp(6)
+  estado       EstadoPedido @default(pendiente)
+  total        Decimal      @db.Decimal(12, 2)
+
+  // Definición de las relaciones con otras tablas
+  cliente      clientes     @relation(fields: [cliente_id], references: [id])
+  usuario      usuarios?    @relation(fields: [usuario_id], references: [id])
+  
+  // Relación: Un pedido tiene muchos items
+  pedido_items pedido_items[]
+}
+
+model pedido_items {
+  id              Int      @id @default(autoincrement())
+  pedido_id       Int
+  producto_id     Int
+  cantidad        Int
+  precio_unitario Decimal  @db.Decimal(10, 2)
+
+  // Definición de las relaciones con otras tablas
+  pedido          pedidos      @relation(fields: [pedido_id], references: [id], onDelete: Cascade)
+  producto        productos    @relation(fields: [producto_id], references: [id])
+  
+  // Relación: Un item de pedido puede tener devoluciones asociadas
+  devoluciones    devoluciones[]
+}
+
+model devoluciones {
+  id                Int              @id @default(autoincrement())
+  pedido_item_id    Int
+  fecha_devolucion  DateTime         @default(now()) @db.Timestamp(6)
+  motivo            String?
+  cantidad_devuelta Int
+  estado            EstadoDevolucion @default(procesando)
+
+  // Definición de la relación
+  pedido_item     pedido_items     @relation(fields: [pedido_item_id], references: [id])
+}
