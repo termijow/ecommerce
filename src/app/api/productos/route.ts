@@ -29,3 +29,27 @@ export async function GET() {
     }
   }
 }
+
+// Crear producto
+export async function POST(req: Request) {
+  try {
+    const { nombre, descripcion, precio, stock } = await req.json();
+
+    // Validaciones
+    if (!nombre) return NextResponse.json({ error: "El nombre es obligatorio" }, { status: 400 });
+    if (precio < 0) return NextResponse.json({ error: "El precio no puede ser negativo" }, { status: 400 });
+    if (stock < 0) return NextResponse.json({ error: "El stock no puede ser negativo" }, { status: 400 });
+
+    const client = await pool.connect();
+    const result = await client.query(
+      "INSERT INTO productos (nombre, descripcion, precio, stock) VALUES ($1, $2, $3, $4) RETURNING *",
+      [nombre, descripcion, precio, stock]
+    );
+    client.release();
+
+    return NextResponse.json(result.rows[0]);
+  } catch (error: any) {
+    console.error("Error en POST /productos:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
