@@ -18,7 +18,6 @@ export async function GET() {
     return NextResponse.json(result.rows);
 
   } catch (error) {
-    // Si algo sale mal (ej: la tabla no existe, la conexión falla)
     console.error("Error al obtener productos desde la API: ", error);
     // Devuelve un error 500 para indicar que algo falló en el servidor
     return new NextResponse('Error interno del servidor al consultar productos', { status: 500 });

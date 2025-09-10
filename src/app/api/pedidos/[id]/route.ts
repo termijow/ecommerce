@@ -1,7 +1,8 @@
+// /app/api/pedidos/[id]/route.ts
 import pool from '@/lib/db';
 import { NextResponse } from 'next/server';
 
-// ✅ PUT: actualizar estado
+// actualizar estado
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {
@@ -24,7 +25,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   }
 }
 
-// ✅ DELETE: eliminar pedido
+// eliminar pedido
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {

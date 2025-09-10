@@ -1,3 +1,4 @@
+// /app/api/devolucinoes/route.ts
 import pool from '@/lib/db';
 import { NextResponse } from 'next/server';
 

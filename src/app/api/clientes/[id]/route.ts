@@ -1,9 +1,10 @@
+// /app/api/clientes/[id]/route.ts
 import pool from "@/lib/db";
 import { NextResponse } from "next/server";
 
-// GET → un cliente
+// mostrar clientes
 export async function GET(_: Request, context: { params: Promise<{ id: string }> }) {
-  const { id } = await context.params; // 👈 await aquí
+  const { id } = await context.params; 
   try {
     const client = await pool.connect();
     const result = await client.query("SELECT * FROM clientes WHERE id=$1", [id]);
@@ -19,9 +20,9 @@ export async function GET(_: Request, context: { params: Promise<{ id: string }>
   }
 }
 
-// PUT → actualizar cliente
+// actualizar cliente
 export async function PUT(req: Request, context: { params: Promise<{ id: string }> }) {
-  const { id } = await context.params; // 👈 await aquí
+  const { id } = await context.params; 
   try {
     const data = await req.json();
     const { nombre, apellido, email, telefono, direccion } = data;
@@ -29,7 +30,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     const client = await pool.connect();
     const result = await client.query(
       `UPDATE clientes 
-       SET nombre=$1, apellido=$2, email=$3, telefono=$4, direccion=$5
+      SET nombre=$1, apellido=$2, email=$3, telefono=$4, direccion=$5
        WHERE id=$6 RETURNING *`,
       [nombre, apellido, email, telefono, direccion, id]
     );
@@ -46,9 +47,9 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
   }
 }
 
-// DELETE → eliminar cliente
+// eliminar cliente
 export async function DELETE(_: Request, context: { params: Promise<{ id: string }> }) {
-  const { id } = await context.params; // 👈 await aquí
+  const { id } = await context.params; 
   try {
     const client = await pool.connect();
     const result = await client.query("DELETE FROM clientes WHERE id=$1 RETURNING *", [id]);

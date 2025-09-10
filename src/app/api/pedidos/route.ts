@@ -1,7 +1,8 @@
+// /app/api/pedidos/route.ts
 import pool from '@/lib/db';
 import { NextResponse } from 'next/server';
 
-// ✅ GET: listar todos los pedidos
+//  listar todos los pedidos
 export async function GET() {
   try {
     const client = await pool.connect();
@@ -17,7 +18,7 @@ export async function GET() {
   }
 }
 
-// ✅ POST: crear un pedido
+//  crear un pedido
 export async function POST(req: Request) {
   try {
     const { cliente_id, usuario_id, items } = await req.json();
