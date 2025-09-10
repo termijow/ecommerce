@@ -14,7 +14,7 @@ export async function GET(_: Request, context: { params: Promise<{ id: string }>
       return NextResponse.json({ error: "Cliente no encontrado" }, { status: 404 });
     }
     return NextResponse.json(result.rows[0]);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error en GET /clientes/:id:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -41,7 +41,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     }
 
     return NextResponse.json(result.rows[0]);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error en PUT /clientes/:id:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -60,7 +60,7 @@ export async function DELETE(_: Request, context: { params: Promise<{ id: string
     }
 
     return NextResponse.json({ message: "Cliente eliminado" });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error en DELETE /clientes/:id:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

@@ -12,7 +12,7 @@ export async function GET() {
 
     client.release();
     return NextResponse.json(result.rows);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error en GET /pedidos:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     client.release();
 
     return NextResponse.json({ message: "Pedido creado", pedido: pedidoRes.rows[0] });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error en POST /pedidos:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

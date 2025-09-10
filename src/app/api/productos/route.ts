@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     client.release();
 
     return NextResponse.json(result.rows[0]);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error en POST /productos:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

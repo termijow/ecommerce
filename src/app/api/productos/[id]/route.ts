@@ -23,7 +23,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 
     return NextResponse.json(result.rows[0]);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error en PUT /productos/[id]:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -44,7 +44,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     return NextResponse.json({ message: "Producto eliminado", producto: result.rows[0] });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error en DELETE /productos/[id]:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

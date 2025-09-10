@@ -20,7 +20,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     return NextResponse.json(result.rows[0]);
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -38,7 +38,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     return NextResponse.json({ message: "Pedido eliminado correctamente" });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

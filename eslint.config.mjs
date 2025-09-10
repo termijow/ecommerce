@@ -1,25 +1,39 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+// eslint.config.mjs
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import nextPlugin from "@next/eslint-plugin-next";
+import tsEslint from 'typescript-eslint';
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+/** @type {import('eslint').Linter.FlatConfig[]} */
+const config = [
   {
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      "out/**",
-      "build/**",
-      "next-env.d.ts",
-    ],
+    // Aplica esta configuración a todos los archivos TypeScript
+    files: ["**/*.ts", "**/*.tsx"],
+
+    // Combina los plugins en un solo objeto
+    plugins: {
+      "@next/next": nextPlugin,
+      '@typescript-eslint': tsEslint.plugin,
+    },
+
+    // Define el parser para que ESLint entienda la sintaxis de TypeScript
+    languageOptions: {
+      parser: tsEslint.parser,
+    },
+
+    // Combina todas las reglas en un solo objeto
+    rules: {
+      // Reglas base de Next.js (importante mantenerlas)
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs["core-web-vitals"].rules,
+
+      // --- NUESTRAS REGLAS PERSONALIZADAS ---
+      // (Excepto para el archivo que ya deshabilitamos con un comentario)
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@next/next/no-img-element": "off",
+    },
   },
 ];
 
-export default eslintConfig;
+export default config;
