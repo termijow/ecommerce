@@ -18,7 +18,6 @@ export async function GET() {
     return NextResponse.json(result.rows);
 
   } catch (error) {
-    // Si algo sale mal (ej: la tabla no existe, la conexión falla)
     console.error("Error al obtener productos desde la API: ", error);
     // Devuelve un error 500 para indicar que algo falló en el servidor
     return new NextResponse('Error interno del servidor al consultar productos', { status: 500 });
@@ -27,5 +26,29 @@ export async function GET() {
     if (client) {
       client.release();
     }
+  }
+}
+
+// Crear producto
+export async function POST(req: Request) {
+  try {
+    const { nombre, descripcion, precio, stock } = await req.json();
+
+    // Validaciones
+    if (!nombre) return NextResponse.json({ error: "El nombre es obligatorio" }, { status: 400 });
+    if (precio < 0) return NextResponse.json({ error: "El precio no puede ser negativo" }, { status: 400 });
+    if (stock < 0) return NextResponse.json({ error: "El stock no puede ser negativo" }, { status: 400 });
+
+    const client = await pool.connect();
+    const result = await client.query(
+      "INSERT INTO productos (nombre, descripcion, precio, stock) VALUES ($1, $2, $3, $4) RETURNING *",
+      [nombre, descripcion, precio, stock]
+    );
+    client.release();
+
+    return NextResponse.json(result.rows[0]);
+  } catch (error: any) {
+    console.error("Error en POST /productos:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

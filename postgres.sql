@@ -70,15 +70,15 @@ CREATE TABLE IF NOT EXISTS devoluciones (
 
 DO $$
 BEGIN
-   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'rol_administrador') THEN
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'rol_administrador') THEN
       CREATE ROLE rol_administrador WITH LOGIN PASSWORD 'admin_pass' SUPERUSER;
-   END IF;
-   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'rol_empleado') THEN
+  END IF;
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'rol_empleado') THEN
       CREATE ROLE rol_empleado WITH LOGIN PASSWORD 'empleado_pass';
-   END IF;
-   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'rol_cliente_estandar') THEN
+  END IF;
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'rol_cliente_estandar') THEN
       CREATE ROLE rol_cliente_estandar WITH LOGIN PASSWORD 'cliente_pass';
-   END IF;
+  END IF;
 END
 $$;
 
